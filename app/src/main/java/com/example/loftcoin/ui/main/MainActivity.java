@@ -1,4 +1,4 @@
-package com.example.loftcoin.activity;
+package com.example.loftcoin.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
