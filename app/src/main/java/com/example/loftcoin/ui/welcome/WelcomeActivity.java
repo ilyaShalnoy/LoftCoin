@@ -1,7 +1,6 @@
 package com.example.loftcoin.ui.welcome;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -12,10 +11,9 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import com.example.loftcoin.R;
 import com.example.loftcoin.databinding.WelcomeActivityBinding;
-import com.example.loftcoin.databinding.WelcomePageBinding;
 import com.example.loftcoin.ui.main.MainActivity;
+import com.example.loftcoin.ui.widget.CircleIndicator;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -31,7 +29,9 @@ public class WelcomeActivity extends AppCompatActivity {
         binding = WelcomeActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.recycler.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        binding.recycler.addItemDecoration(new CircleIndicator(this));
         binding.recycler.setAdapter(new WelcomeAdapter());
+        binding.recycler.setHasFixedSize(true);
         helper = new PagerSnapHelper();
         helper.attachToRecyclerView(binding.recycler);
         binding.btnStart.setOnClickListener((v) -> {

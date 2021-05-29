@@ -9,5 +9,10 @@
     <string name="welcome_page_3_title">Конвертер валют</string>
     <string name="welcome_page_3_subtitle">Узнай сколько эфира в одном биткоине.</string>
     <string name="start_working">Начать работу</string>
+
+    <!-- Main Bottom menu -->
+    <string name="wallets">Кошельки</string>
+    <string name="rates">Курс</string>
+    <string name="converter">Конвертер</string>
 </resources>
 

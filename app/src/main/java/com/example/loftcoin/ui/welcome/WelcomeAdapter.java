@@ -22,13 +22,13 @@ public class WelcomeAdapter extends RecyclerView.Adapter<WelcomeAdapter.ViewHold
     private static final int[] TITLE = {
             R.string.welcome_page_1_title,
             R.string.welcome_page_2_title,
-            R.string.welcome_page_2_title,
+            R.string.welcome_page_3_title,
     };
 
     private static final int[] SUBTITLE = {
             R.string.welcome_page_1_subtitle,
             R.string.welcome_page_2_subtitle,
-            R.string.welcome_page_2_subtitle,
+            R.string.welcome_page_3_subtitle,
     };
 
     private LayoutInflater inflate;
