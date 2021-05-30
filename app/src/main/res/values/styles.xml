@@ -26,6 +26,8 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <attr name="buttonWelcome" format="reference"/>
-    
+    <style name="TextAppearance.AppTheme.H5">
+        <item name="android:textSize">11sp</item>
+    </style>
+
 </resources>
