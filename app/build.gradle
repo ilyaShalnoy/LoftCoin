@@ -13,6 +13,9 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField "String", "API_KEY", "\"${pApiKey}\""
+        buildConfigField "String", "API_ENDPOINT", "\"https://pro-api.coinmarketcap.com/v1/\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,4 +55,15 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    compileOnly  "com.google.auto.value:auto-value-annotations:1.7"
+    annotationProcessor "com.google.auto.value:auto-value:1.7"
+
+    implementation "com.squareup.moshi:moshi:1.12.0"
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
+    implementation "com.squareup.picasso:picasso:2.71828"
+
 }

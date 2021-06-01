@@ -3,15 +3,23 @@
     <style name="Theme.LoftCoin" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/dark_six</item>
         <item name="colorSecondary">@color/grey_blue</item>
+        <item name="colorPrimaryVariant">@color/dark_seven</item>
         <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="buttonWelcome">@style/Widget.AppTheme.Button.Welcome</item>
+
         <item name="textAppearanceHeadline1">@style/TextAppearance.AppTheme.H1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.AppTheme.H2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.AppTheme.H3</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.AppTheme.H4</item>
         <item name="textAppearanceHeadline5">@style/TextAppearance.AppTheme.H5</item>
+
         <item name="walletCardWidth">240dp</item>
         <item name="walletCardHeight">160dp</item>
         <item name="walletCardBackground">@color/dark_five</item>
+
+        <item name="actionBarTheme">@style/AppTheme.AppBarOverlay</item>
+        <item name="actionBarPopupTheme">@style/AppTheme.PopupOverlay</item>
+        
+        <item name="bottomNavigationStyle">@style/AppTheme.BottomNavigationView</item>
     </style>
 </resources>
