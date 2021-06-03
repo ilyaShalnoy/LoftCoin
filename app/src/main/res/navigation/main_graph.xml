@@ -15,12 +15,12 @@
         android:id="@+id/rates"
         android:name="com.example.loftcoin.ui.rates.RatesFragment"
         android:label="@string/rates"
-        tools:layout="@layout/rates_fragment"/>
+        tools:layout="@layout/fragment_rates"/>
 
         <fragment
             android:id="@+id/converter"
             android:name="com.example.loftcoin.ui.converter.ConverterFragment"
             android:label="@string/converter"
-            tools:layout="@layout/converter_fragment"/>
+            tools:layout="@layout/fragment_converter"/>
 
 </navigation>
