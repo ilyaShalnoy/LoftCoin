@@ -7,5 +7,5 @@ import java.util.List;
 @AutoValue
 abstract class Listings {
 
-    abstract List<Coin> data();
+    abstract List<AutoValue_Coin> data();
 }

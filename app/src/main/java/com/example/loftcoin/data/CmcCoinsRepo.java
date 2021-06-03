@@ -64,6 +64,7 @@ public class CmcCoinsRepo implements CoinsRepo {
 
     private Retrofit createRetrofit(OkHttpClient httpClient) {
         final Retrofit.Builder builder = new Retrofit.Builder();
+        builder.client(httpClient);
         builder.baseUrl(BuildConfig.API_ENDPOINT);
         final Moshi moshi = new Moshi.Builder().build();
         builder.addConverterFactory(MoshiConverterFactory.create(

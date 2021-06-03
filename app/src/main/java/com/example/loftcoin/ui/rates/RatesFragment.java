@@ -8,11 +8,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.loftcoin.R;
+import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.databinding.FragmentRatesBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class RatesFragment extends Fragment implements RatesView {
 
@@ -37,18 +41,21 @@ public class RatesFragment extends Fragment implements RatesView {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding = FragmentRatesBinding.bind(view);
+        binding.recyclerRates.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        binding.recyclerRates.setHasFixedSize(true);
         presenter.attach(this);
     }
 
     @Override
     public void onDestroyView() {
+        binding.recyclerRates.setAdapter(null);
         presenter.detach(this);
         super.onDestroyView();
     }
 
     @Override
-    public void showCoins() {
-
+    public void showCoins(@NonNull @NotNull List<? extends Coin> coins) {
+        binding.recyclerRates.setAdapter(new RatesAdapter(coins));
     }
 
     @Override

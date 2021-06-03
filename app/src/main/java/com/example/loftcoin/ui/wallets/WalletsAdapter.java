@@ -39,10 +39,12 @@ public class WalletsAdapter extends RecyclerView.Adapter<WalletsAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
+        
+        private final LiWalletBinding binding;
 
         public ViewHolder(@NonNull LiWalletBinding binding) {
             super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }
