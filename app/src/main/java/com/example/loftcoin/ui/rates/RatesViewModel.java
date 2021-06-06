@@ -1,6 +1,5 @@
 package com.example.loftcoin.ui.rates;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -18,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class RatesViewModel extends ViewModel {
+
+    private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>();
 
     private final MutableLiveData<List<Coin>> coins = new MutableLiveData<>();
 
@@ -37,10 +38,17 @@ public class RatesViewModel extends ViewModel {
         return coins;
     }
 
+    @NonNull
+    LiveData<Boolean> isRefreshing() {
+        return isRefreshing;
+    }
+
     final void refresh() {
+      isRefreshing.postValue(true);
         executor.submit(() -> {
             try {
                 coins.postValue(new ArrayList<>(repo.listings("USD")));
+                isRefreshing.postValue(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }

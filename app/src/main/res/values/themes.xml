@@ -21,5 +21,8 @@
         <item name="actionBarPopupTheme">@style/AppTheme.PopupOverlay</item>
         
         <item name="bottomNavigationStyle">@style/AppTheme.BottomNavigationView</item>
+
+        <item name="percentNegative">@color/watermelon</item>
+        <item name="percentPositive">@color/weird_green</item>
     </style>
 </resources>

@@ -15,6 +15,7 @@ android {
 
         buildConfigField "String", "API_KEY", "\"${pApiKey}\""
         buildConfigField "String", "API_ENDPOINT", '"https://pro-api.coinmarketcap.com/v1/"'
+        buildConfigField "String", "IMG_ENDPOINT", '"https://s2.coinmarketcap.com/static/img/coins/128x128/"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -72,4 +73,5 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     implementation "com.squareup.picasso:picasso:2.71828"
 
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
 }

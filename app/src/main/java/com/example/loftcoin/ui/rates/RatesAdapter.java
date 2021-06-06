@@ -1,7 +1,9 @@
 package com.example.loftcoin.ui.rates;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -9,18 +11,29 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.loftcoin.BuildConfig;
+import com.example.loftcoin.R;
 import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.databinding.LiRatesBinding;
+import com.example.loftcoin.util.Formatter;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
+    private final Formatter<Double> priceFormatter;
+
     private LayoutInflater inflate;
 
-    protected RatesAdapter() {
+    private int colorNegative = Color.RED;
+
+    private int colorPositive = Color.GREEN;
+
+    protected RatesAdapter(Formatter<Double> priceFormatter) {
         super(new DiffUtil.ItemCallback<Coin>() {
             @Override
             public boolean areItemsTheSame(@NonNull @NotNull Coin oldItem, @NonNull @NotNull Coin newItem) {
@@ -32,6 +45,8 @@ public class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
                 return Objects.equals(oldItem, newItem);
             }
         });
+        this.priceFormatter = priceFormatter;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -43,13 +58,30 @@ public class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RatesAdapter.ViewHolder holder, int position) {
-        holder.binding.logoRatesText.setText(getItem(position).symbol());
+        final Coin coin = getItem(position);
+        holder.binding.logoRatesText.setText(coin.symbol());
+        holder.binding.price.setText(priceFormatter.format(coin.price()));
+        if(coin.change24h() > 0) {
+            holder.binding.percent.setTextColor(colorPositive);
+        } else {
+            holder.binding.percent.setTextColor(colorNegative);
+        }
+        holder.binding.percent.setText(String.format(Locale.US ,"%.2f%%", coin.change24h()));
+        Picasso.get()
+                .load(BuildConfig.IMG_ENDPOINT + coin.id() + ".png")
+                .into(holder.binding.logoRates);
     }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull @NotNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        inflate = LayoutInflater.from(recyclerView.getContext());
+        final Context context = recyclerView.getContext();
+        inflate = LayoutInflater.from(context);
+        TypedValue v = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.percentNegative, v, true);
+        colorNegative = v.data;
+        context.getTheme().resolveAttribute(R.attr.percentPositive, v, true);
+        colorPositive = v.data;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,8 +92,5 @@ public class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
             super(binding.getRoot());
             this.binding = binding;
         }
-
-
     }
-
 }
