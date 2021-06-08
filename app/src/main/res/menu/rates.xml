@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="AlwaysShowAction">
 
-    <item android:id="@+id/currency"
+    <item android:id="@+id/currency_dialog"
         android:icon="@drawable/ic_currency_24dp"
         android:title="@string/choose_currency"
         app:showAsAction="always"

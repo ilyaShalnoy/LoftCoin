@@ -12,10 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.loftcoin.R;
 import com.example.loftcoin.databinding.FragmentRatesBinding;
+import com.example.loftcoin.util.PercentFormatter;
 import com.example.loftcoin.util.PriceFormatter;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +37,7 @@ public class RatesFragment extends Fragment {
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(RatesViewModel.class);
-        adapter = new RatesAdapter(new PriceFormatter());
+        adapter = new RatesAdapter(new PriceFormatter(), new PercentFormatter());
     }
 
     @Nullable
@@ -69,7 +71,12 @@ public class RatesFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
-        Timber.d("%s", item);
+        if(R.id.currency_dialog == item.getItemId()) {
+            NavHostFragment
+                    .findNavController(this)
+                    .navigate(R.id.currency_dialog);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
