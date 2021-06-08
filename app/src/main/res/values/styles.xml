@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.AppTheme.Button.Welcome" parent="Widget.MaterialComponents.TextView">
+        <item name="android:background">@drawable/btn_welcome</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAppearance">?attr/textAppearanceButton</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+    
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light"/>
+    
+    <style name="AppTheme.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">?attr/colorPrimaryVariant</item>
+        <item name="itemIconTint">@color/bottom_nav_item</item>
+        <item name="itemTextColor">@color/bottom_nav_item</item>
+    </style>
+    
+    <style name="TextAppearance.AppTheme" parent="TextAppearance.MaterialComponents.Body1"/>
+
+    <style name="TextAppearance.AppTheme.H1">
+        <item name="android:textSize">36sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H2">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H3">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H4">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.H5">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+</resources>
