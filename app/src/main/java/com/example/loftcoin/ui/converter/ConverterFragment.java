@@ -13,7 +13,14 @@ import com.example.loftcoin.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+
 public class ConverterFragment extends Fragment {
+
+    @Inject
+    public ConverterFragment() {
+
+    }
 
     @Nullable
     @org.jetbrains.annotations.Nullable

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.loftcoin.data.CmcCoinsRepo;
 import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.data.CoinsRepo;
 
@@ -16,6 +15,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.inject.Inject;
+
+import timber.log.Timber;
+
 public class RatesViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>();
@@ -24,12 +27,13 @@ public class RatesViewModel extends ViewModel {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private final CoinsRepo repo;
+    private final CoinsRepo coinsRepo;
 
     private Future<?> future;
 
-  public RatesViewModel() {
-        repo = new CmcCoinsRepo();
+    @Inject
+    public RatesViewModel(CoinsRepo coinsRepo) {
+        this.coinsRepo = coinsRepo;
         refresh();
     }
 
@@ -44,20 +48,20 @@ public class RatesViewModel extends ViewModel {
     }
 
     final void refresh() {
-      isRefreshing.postValue(true);
-        executor.submit(() -> {
+        isRefreshing.postValue(true);
+        future = executor.submit(() -> {
             try {
-                coins.postValue(new ArrayList<>(repo.listings("USD")));
+                coins.postValue(new ArrayList<>(coinsRepo.listings("USD")));
                 isRefreshing.postValue(false);
             } catch (IOException e) {
-                e.printStackTrace();
+                Timber.e(e);
             }
         });
     }
 
     @Override
     protected void onCleared() {
-        if(future != null){
+        if (future != null) {
             future.cancel(true);
         }
     }

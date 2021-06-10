@@ -63,8 +63,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    compileOnly  "com.google.auto.value:auto-value-annotations:1.7"
-    annotationProcessor "com.google.auto.value:auto-value:1.7"
+    compileOnly  "com.google.auto.value:auto-value-annotations:1.8.1"
+    annotationProcessor "com.google.auto.value:auto-value:1.8.1"
 
     implementation "com.squareup.moshi:moshi:1.12.0"
     implementation "com.squareup.okhttp3:okhttp:4.9.0"
@@ -74,4 +74,9 @@ dependencies {
     implementation "com.squareup.picasso:picasso:2.71828"
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
+
+    //Dagger
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'com.google.dagger:dagger:2.36'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.36'
 }
