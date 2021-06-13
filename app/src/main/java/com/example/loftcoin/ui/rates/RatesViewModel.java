@@ -3,6 +3,7 @@ package com.example.loftcoin.ui.rates;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.loftcoin.data.Coin;
@@ -23,19 +24,29 @@ public class RatesViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>();
 
-    private final MutableLiveData<List<Coin>> coins = new MutableLiveData<>();
-
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private final CoinsRepo coinsRepo;
+    private final MutableLiveData<Boolean> forceRefresh = new MutableLiveData<>(true);
 
-    private Future<?> future;
+    private final LiveData<List<Coin>> coins;
 
     @Inject
     public RatesViewModel(CoinsRepo coinsRepo) {
-        this.coinsRepo = coinsRepo;
-        refresh();
+        final LiveData<CoinsRepo.Query> query = Transformations
+                .map(forceRefresh, (r) -> {
+                    isRefreshing.postValue(true);
+                    return CoinsRepo.Query.builder()
+                            .forceUpdate(r)
+                            .currency("USD")
+                            .build();
+                });
+        final LiveData<List<Coin>> coins = Transformations.switchMap(query, coinsRepo::listings);
+        this.coins = Transformations.map(coins, (c) -> {
+            isRefreshing.postValue(false);
+            return c;
+        });
     }
+
 
     @NonNull
     LiveData<List<Coin>> coins() {
@@ -48,21 +59,6 @@ public class RatesViewModel extends ViewModel {
     }
 
     final void refresh() {
-        isRefreshing.postValue(true);
-        future = executor.submit(() -> {
-            try {
-                coins.postValue(new ArrayList<>(coinsRepo.listings("USD")));
-                isRefreshing.postValue(false);
-            } catch (IOException e) {
-                Timber.e(e);
-            }
-        });
-    }
-
-    @Override
-    protected void onCleared() {
-        if (future != null) {
-            future.cancel(true);
-        }
+        forceRefresh.postValue(true);
     }
 }
