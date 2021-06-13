@@ -14,7 +14,8 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "API_KEY", "\"${pApiKey}\""
-        buildConfigField "String", "API_ENDPOINT", "\"https://pro-api.coinmarketcap.com/v1/\""
+        buildConfigField "String", "API_ENDPOINT", '"https://pro-api.coinmarketcap.com/v1/"'
+        buildConfigField "String", "IMG_ENDPOINT", '"https://s2.coinmarketcap.com/static/img/coins/128x128/"'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,6 +53,12 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:2.3.5"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
+
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -66,4 +73,5 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
     implementation "com.squareup.picasso:picasso:2.71828"
 
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
 }
