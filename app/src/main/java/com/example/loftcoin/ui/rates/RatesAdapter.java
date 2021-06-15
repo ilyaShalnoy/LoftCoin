@@ -53,6 +53,11 @@ public class RatesAdapter extends ListAdapter<Coin, RatesAdapter.ViewHolder> {
         setHasStableIds(true);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).id();
+    }
+
     @NonNull
     @NotNull
     @Override

@@ -10,8 +10,10 @@ public interface Coin {
 
     double change24h();
 
+    double price();
+
     int rank();
 
-    double price();
+
 
 }

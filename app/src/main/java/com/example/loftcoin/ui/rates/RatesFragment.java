@@ -68,6 +68,7 @@ public class RatesFragment extends Fragment {
         binding.recyclerRates.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.recyclerRates.swapAdapter(adapter, false);
         binding.recyclerRates.setHasFixedSize(true);
+        binding.refresher.setOnRefreshListener(viewModel::refresh);
         viewModel.coins().observe(getViewLifecycleOwner(), (coins) -> {
             adapter.submitList(coins);
         });
@@ -89,6 +90,9 @@ public class RatesFragment extends Fragment {
             NavHostFragment
                     .findNavController(this)
                     .navigate(R.id.currency_dialog);
+            return true;
+        } else if (R.id.sort == item.getItemId()) {
+            viewModel.switchSortingOrder();
             return true;
         }
         return super.onOptionsItemSelected(item);
