@@ -60,7 +60,7 @@ class CmcCoinsRepo implements CoinsRepo {
                     if (response.isSuccessful()) {
                         final Listings listings = response.body();
                         if (listings != null) {
-                            saveCoinsIntoDb(listings.data());
+                            saveCoinsIntoDb(query, listings.data());
                         }
                     } else {
                         final ResponseBody responseBody = response.errorBody();
@@ -75,7 +75,7 @@ class CmcCoinsRepo implements CoinsRepo {
         });
     }
 
-    private void saveCoinsIntoDb(List<? extends Coin> coins) {
+    private void saveCoinsIntoDb(Query query, List<? extends Coin> coins) {
         List<RoomCoin> roomCoins = new ArrayList<>(coins.size());
         for (Coin coin : coins) {
             roomCoins.add(RoomCoin.create(
@@ -84,6 +84,7 @@ class CmcCoinsRepo implements CoinsRepo {
                     coin.change24h(),
                     coin.rank(),
                     coin.price(),
+                    query.currency(),
                     coin.id()
             ));
         }

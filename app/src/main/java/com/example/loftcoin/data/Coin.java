@@ -14,6 +14,6 @@ public interface Coin {
 
     int rank();
 
-
+    String currencyCode();
 
 }

@@ -20,5 +20,7 @@ abstract class RatesComponent {
 
     abstract ViewModelProvider.Factory viewModelFactory();
 
+    abstract RatesAdapter ratesAdapter();
+
 
 }

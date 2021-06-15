@@ -41,13 +41,13 @@ public class RatesViewModel extends ViewModel {
             return Transformations.switchMap(currencyRepo.currency(), (c) -> {
                 r.set(true);
                 isRefreshing.postValue(true);
-               return Transformations.map(sortBy, (s) -> {
-                   return CoinsRepo.Query.builder()
-                           .currency(c.code())
-                           .forceUpdate(r.getAndSet(false))
-                           .sortBy(s)
-                           .build();
-               });
+                return Transformations.map(sortBy, (s) -> {
+                    return CoinsRepo.Query.builder()
+                            .currency(c.code())
+                            .forceUpdate(r.getAndSet(false))
+                            .sortBy(s)
+                            .build();
+                });
             });
         });
 
@@ -72,8 +72,9 @@ public class RatesViewModel extends ViewModel {
     final void refresh() {
         forceRefresh.postValue(new AtomicBoolean(true));
     }
+
     void switchSortingOrder() {
-       sortBy.postValue(SortBy.values()[sortingIndex++ % SortBy.values().length]);
+        sortBy.postValue(SortBy.values()[sortingIndex++ % SortBy.values().length]);
     }
 
 }

@@ -51,7 +51,7 @@ public class RatesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this,component.viewModelFactory())
                 .get(RatesViewModel.class);
-        adapter = new RatesAdapter(new PriceFormatter(), new PercentFormatter());
+        adapter = component.ratesAdapter();
     }
 
     @Nullable
