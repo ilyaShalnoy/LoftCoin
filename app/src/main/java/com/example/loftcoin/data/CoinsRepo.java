@@ -9,10 +9,12 @@ import com.google.auto.value.AutoValue;
 import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 public interface CoinsRepo {
 
     @NonNull
-    LiveData<List<Coin>> listings(@NonNull Query query);
+    Observable<List<Coin>> listings(@NonNull Query query);
 
     @AutoValue
     abstract class Query {

@@ -20,6 +20,10 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 
 @Singleton
 class CurrencyRepoImpl implements CurrencyRepo {
@@ -53,32 +57,22 @@ class CurrencyRepoImpl implements CurrencyRepo {
     @NonNull
     @NotNull
     @Override
-    public LiveData<Currency> currency() {
-        return new CurrencyLiveDate();
+    public Observable<Currency> currency() {
+        return Observable.create(emitter -> {
+            SharedPreferences.OnSharedPreferenceChangeListener listener = (preferences, key) -> {
+                if (!emitter.isDisposed()) {
+                    emitter.onNext(availableCurrencies.get(preferences.getString(key, "USD")));
+                }
+            };
+            preferences.registerOnSharedPreferenceChangeListener(listener);
+            emitter.setCancellable(() -> preferences.unregisterOnSharedPreferenceChangeListener(listener));
+            emitter.onNext(availableCurrencies.get(preferences.getString(KEY_CURRENCY, "USD")));
+        });
     }
 
     @Override
     public void updateCurrency(@NonNull @NotNull Currency currency) {
         preferences.edit().putString(KEY_CURRENCY, currency.code()).apply();
-    }
-
-    private class CurrencyLiveDate extends LiveData<Currency> implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-        @Override
-        protected void onActive() {
-            preferences.registerOnSharedPreferenceChangeListener(this);
-            setValue(availableCurrencies.get(preferences.getString(KEY_CURRENCY, "USD")));
-        }
-
-        @Override
-        protected void onInactive() {
-            preferences.unregisterOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            setValue(availableCurrencies.get(preferences.getString(key, "USD")));
-        }
     }
 
 }
