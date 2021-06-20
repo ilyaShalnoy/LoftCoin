@@ -22,7 +22,7 @@
         android:name="com.example.loftcoin.ui.converter.ConverterFragment"
         android:label="@string/converter"
         tools:layout="@layout/fragment_converter" />
-    <fragment
+    <dialog
         android:id="@+id/currency_dialog"
         android:name="com.example.loftcoin.ui.currency.CurrencyDialog"
         android:label="CurrencyDialog"

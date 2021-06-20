@@ -6,11 +6,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class PercentFormatter implements Formatter<Double> {
 
+    @Inject
     public PercentFormatter(){
-
     }
+
     @NonNull
     @NotNull
     @Override

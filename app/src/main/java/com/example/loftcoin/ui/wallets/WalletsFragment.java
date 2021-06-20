@@ -21,9 +21,16 @@ import com.example.loftcoin.ui.main.MainActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+
 public class WalletsFragment extends Fragment {
 
     private SnapHelper walletsSnapHelper;
+
+    @Inject
+    public WalletsFragment(){
+
+    }
 
     @Nullable
     @org.jetbrains.annotations.Nullable
