@@ -55,7 +55,7 @@ public class RatesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this,component.viewModelFactory())
+        viewModel = new ViewModelProvider(this, component.viewModelFactory())
                 .get(RatesViewModel.class);
         adapter = component.ratesAdapter();
     }
@@ -101,16 +101,8 @@ public class RatesFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        binding.recyclerRates.swapAdapter(null, false);
+        binding.recyclerRates.setAdapter(null);
         disposable.clear();
         super.onDestroyView();
     }
-
-//    private void submitlist(List<Coin> coins) {
-//        adapter.submitList(coins);
-//    }
-//
-//    private void accept(Boolean coins) {
-//        binding.refresher.setRefreshing(refreshing);
-//    }
 }

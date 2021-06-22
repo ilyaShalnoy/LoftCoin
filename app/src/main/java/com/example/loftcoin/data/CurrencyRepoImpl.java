@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -34,8 +35,6 @@ class CurrencyRepoImpl implements CurrencyRepo {
     private final Map<String, Currency> availableCurrencies = new HashMap<>();
 
     private SharedPreferences preferences;
-
-    private Context context;
 
     @Inject
     CurrencyRepoImpl(@NonNull Context context) {
@@ -61,12 +60,12 @@ class CurrencyRepoImpl implements CurrencyRepo {
         return Observable.create(emitter -> {
             SharedPreferences.OnSharedPreferenceChangeListener listener = (preferences, key) -> {
                 if (!emitter.isDisposed()) {
-                    emitter.onNext(availableCurrencies.get(preferences.getString(key, "USD")));
+                    emitter.onNext(Objects.requireNonNull(availableCurrencies.get(preferences.getString(key, "USD"))));
                 }
             };
             preferences.registerOnSharedPreferenceChangeListener(listener);
             emitter.setCancellable(() -> preferences.unregisterOnSharedPreferenceChangeListener(listener));
-            emitter.onNext(availableCurrencies.get(preferences.getString(KEY_CURRENCY, "USD")));
+            emitter.onNext(Objects.requireNonNull(availableCurrencies.get(preferences.getString(KEY_CURRENCY, "USD"))));
         });
     }
 

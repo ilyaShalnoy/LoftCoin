@@ -1,7 +1,6 @@
 package com.example.loftcoin.util;
 
 import android.content.Context;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.os.ConfigurationCompat;

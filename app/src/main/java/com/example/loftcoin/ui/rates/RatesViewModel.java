@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 
@@ -48,11 +47,11 @@ public class RatesViewModel extends ViewModel {
                 .doOnNext((qb) -> forceUpdate.set(true))
                 .doOnNext((qb) -> isRefreshing.onNext(true))
                 .switchMap((qb) -> sortBy
-                        .map((s) -> qb.sortBy(s))
+                        .map(qb::sortBy)
                 )
                 .map((qb) -> qb.forceUpdate(forceUpdate.getAndSet(false)))
-                .map((qb) -> qb.build())
-                .switchMap((q) -> coinsRepo.listings(q))
+                .map(CoinsRepo.Query.Builder::build)
+                .switchMap(coinsRepo::listings)
                 .doOnEach((ntf) -> isRefreshing.onNext(false));
 
     }
