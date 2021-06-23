@@ -1,11 +1,21 @@
 package com.example.loftcoin.data;
 
+import android.support.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.Date;
 
 @AutoValue
 public abstract class Transaction {
+
+    @NonNull
+    public static Transaction create(String uid,
+                                     Coin coin,
+                                     double amount,
+                                     Date createdAt) {
+        return new AutoValue_Transaction(uid, coin, amount, createdAt);
+    }
 
     public abstract String uid();
 

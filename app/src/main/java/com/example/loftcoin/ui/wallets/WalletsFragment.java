@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.example.loftcoin.BaseComponent;
 import com.example.loftcoin.R;
+import com.example.loftcoin.data.Transaction;
 import com.example.loftcoin.databinding.FragmentWalletsBinding;
 import com.example.loftcoin.ui.main.MainActivity;
 
@@ -43,6 +44,8 @@ public class WalletsFragment extends Fragment {
 
     private WalletsAdapter adapter;
 
+    private TransactionsAdapter transactionsAdapter;
+
     @Inject
     public WalletsFragment(BaseComponent baseComponent) {
         component = DaggerWalletsComponent.builder()
@@ -56,6 +59,7 @@ public class WalletsFragment extends Fragment {
         viewModel = new ViewModelProvider(this, component.viewModelFactory())
                 .get(WalletsViewModel.class);
         adapter = component.walletsAdapter();
+        transactionsAdapter = component.transactionsAdapter();
     }
 
     @Nullable
@@ -90,12 +94,19 @@ public class WalletsFragment extends Fragment {
             binding.recycler.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         }));
 
+        binding.transactions.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        binding.transactions.setAdapter(transactionsAdapter);
+        binding.transactions.setHasFixedSize(true);
+
+        disposable.add(viewModel.transaction().subscribe(transactionsAdapter::submitList));
+
     }
 
     @Override
     public void onDestroyView() {
         walletsSnapHelper.attachToRecyclerView(null);
         binding.recycler.setAdapter(null);
+        binding.transactions.setAdapter(null);
         disposable.clear();
         super.onDestroyView();
     }

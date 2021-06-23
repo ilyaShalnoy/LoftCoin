@@ -14,5 +14,5 @@ public interface WalletsRepo {
     Observable<List<Wallet>> wallets(@NonNull Currency currency);
 
     @NonNull
-    Observable<List<Transaction>> transaction(@NonNull Wallet wallet);
+    Observable<List<Transaction>> transactions(@NonNull Wallet wallet);
 }

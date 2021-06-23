@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.loftcoin.BuildConfig;
 import com.example.loftcoin.data.Wallet;
 import com.example.loftcoin.databinding.LiWalletBinding;
+import com.example.loftcoin.util.BalanceFormatter;
+import com.example.loftcoin.util.ImageLoader;
 import com.example.loftcoin.util.PriceFormatter;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +28,12 @@ public class WalletsAdapter extends ListAdapter<Wallet, WalletsAdapter.ViewHolde
 
     private final PriceFormatter priceFormatter;
 
+    private final BalanceFormatter balanceFormatter;
+
+    private final ImageLoader imageLoader;
+
     @Inject
-    public WalletsAdapter(PriceFormatter priceFormatter) {
+    public WalletsAdapter(PriceFormatter priceFormatter, BalanceFormatter balanceFormatter, ImageLoader imageLoader) {
         super(new DiffUtil.ItemCallback<Wallet>() {
             @Override
             public boolean areItemsTheSame(@NonNull @NotNull Wallet oldItem, @NonNull @NotNull Wallet newItem) {
@@ -39,6 +46,8 @@ public class WalletsAdapter extends ListAdapter<Wallet, WalletsAdapter.ViewHolde
             }
         });
         this.priceFormatter = priceFormatter;
+        this.balanceFormatter = balanceFormatter;
+        this.imageLoader = imageLoader;
     }
 
 
@@ -53,7 +62,12 @@ public class WalletsAdapter extends ListAdapter<Wallet, WalletsAdapter.ViewHolde
     public void onBindViewHolder(@NonNull @NotNull WalletsAdapter.ViewHolder holder, int position) {
         final Wallet wallet = getItem(position);
         holder.binding.logoCardText.setText(wallet.coin().symbol());
-        holder.binding.balance1Text.setText(priceFormatter.format(wallet.balance()));
+        holder.binding.balance1Text.setText(balanceFormatter.format(wallet));
+        final double balance = wallet.balance() * wallet.coin().price();
+        holder.binding.balance2Text.setText(priceFormatter.format(wallet.coin().currencyCode(), balance));
+        imageLoader
+                .load(BuildConfig.IMG_ENDPOINT + wallet.coin().id() + ".png")
+                .into(holder.binding.logoCard);
     }
 
 
