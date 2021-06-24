@@ -7,6 +7,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 
 public interface CoinsRepo {
@@ -16,6 +17,9 @@ public interface CoinsRepo {
 
     @NonNull
     Single<Coin> coin(Currency currency, long id);
+
+    @NonNull
+    Observable<List<Coin>> topCoins(@NonNull Currency currency);
 
     @AutoValue
     abstract class Query {

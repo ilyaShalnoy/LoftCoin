@@ -10,6 +10,7 @@ import androidx.room.Query;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 
 @Dao
@@ -33,4 +34,7 @@ abstract class CoinsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract void insert(List<RoomCoin> coins);
+
+    @Query("SELECT * FROM RoomCoin ORDER BY rank ASC LIMIT :limit ")
+    public abstract Observable<List<RoomCoin>> fetchTop(int limit);
 }

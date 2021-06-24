@@ -21,6 +21,7 @@ import com.example.loftcoin.R;
 import com.example.loftcoin.data.Transaction;
 import com.example.loftcoin.databinding.FragmentWalletsBinding;
 import com.example.loftcoin.ui.main.MainActivity;
+import com.example.loftcoin.widget.RxRecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -85,6 +86,9 @@ public class WalletsFragment extends Fragment {
 
         binding.recycler.addOnScrollListener(new CarouselScroller());
         binding.recycler.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
+        disposable.add(RxRecyclerView
+                .onSnap(binding.recycler, walletsSnapHelper)
+                .subscribe((position) -> viewModel.changeWallet(position)));
 
         binding.recycler.setAdapter(adapter);
 
@@ -96,7 +100,7 @@ public class WalletsFragment extends Fragment {
 
         binding.transactions.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.transactions.setAdapter(transactionsAdapter);
-        binding.transactions.setHasFixedSize(true);
+//        binding.transactions.setHasFixedSize(true);
 
         disposable.add(viewModel.transaction().subscribe(transactionsAdapter::submitList));
 

@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.example.loftcoin.util.RxSchedulers;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +55,16 @@ class CmcCoinsRepo implements CoinsRepo {
                 .switchMapSingle((coins) -> db.coins().fetchOne(id))
                 .firstOrError()
                 .map((coin) -> coin);
+    }
+
+    @NonNull
+    @NotNull
+    @Override
+    public Observable<List<Coin>> topCoins(@NonNull @NotNull Currency currency) {
+        return listings(Query.builder().currency(currency.code()).forceUpdate(false).build())
+                .switchMap((coins) -> db.coins().fetchTop(3))
+                .<List<Coin>>map(Collections::unmodifiableList);
+
     }
 
     private Observable<List<RoomCoin>> fetchFromDb(Query query) {

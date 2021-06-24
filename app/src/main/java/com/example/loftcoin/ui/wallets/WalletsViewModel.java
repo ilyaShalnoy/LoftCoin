@@ -68,6 +68,11 @@ public class WalletsViewModel extends ViewModel {
     Observable<List<Transaction>> transaction() {
         return transactions.observeOn(schedulers.main());
     }
+
+    void changeWallet(int position) {
+        walletPosition.onNext(position);
+    }
+
 //
 //    @NonNull
 //    Completable addWallet() {
