@@ -9,6 +9,7 @@ import com.example.loftcoin.data.CurrencyRepo;
 import com.example.loftcoin.data.SortBy;
 import com.example.loftcoin.util.RxSchedulers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 public class RatesViewModel extends ViewModel {
@@ -27,6 +29,10 @@ public class RatesViewModel extends ViewModel {
     private final Subject<SortBy> sortBy = BehaviorSubject.createDefault(SortBy.RANK);
 
     private final AtomicBoolean forceUpdate = new AtomicBoolean();
+
+    private final Subject<Throwable> error = PublishSubject.create();
+
+    private final Subject<Class<?>> onRetry = PublishSubject.create();
 
     private final Observable<List<Coin>> coins;
 
@@ -51,8 +57,15 @@ public class RatesViewModel extends ViewModel {
                 )
                 .map((qb) -> qb.forceUpdate(forceUpdate.getAndSet(false)))
                 .map(CoinsRepo.Query.Builder::build)
-                .switchMap(coinsRepo::listings)
-                .doOnEach((ntf) -> isRefreshing.onNext(false));
+                .switchMap((q) -> coinsRepo
+                        .listings(q)
+                        .doOnError(error::onNext)
+                        .retryWhen((e) -> onRetry)
+  //                      .onErrorReturnItem(Collections.emptyList())
+                )
+                .doOnEach((ntf) -> isRefreshing.onNext(false))
+                .replay(1)
+                .autoConnect();
 
     }
 
@@ -66,6 +79,11 @@ public class RatesViewModel extends ViewModel {
         return isRefreshing.observeOn(rxSchedulers.main());
     }
 
+    @NonNull
+    Observable<Throwable> onError() {
+        return error.observeOn(rxSchedulers.main());
+    }
+
     final void refresh() {
         pullToRefresh.onNext(Void.TYPE);
     }
@@ -74,4 +92,7 @@ public class RatesViewModel extends ViewModel {
         sortBy.onNext(SortBy.values()[sortingIndex++ % SortBy.values().length]);
     }
 
+    void retry() {
+        onRetry.onNext(Void.class);
+    }
 }

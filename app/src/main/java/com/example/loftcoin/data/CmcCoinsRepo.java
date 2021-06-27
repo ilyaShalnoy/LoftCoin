@@ -58,6 +58,15 @@ class CmcCoinsRepo implements CoinsRepo {
     }
 
     @NonNull
+    @Override
+    public Single<Coin> nextPopularCoin(@NonNull Currency currency, List<Integer> ids) {
+        return listings(Query.builder().currency(currency.code()).forceUpdate(false).build())
+                .switchMapSingle((coins) -> db.coins().nextPopularCoin(ids))
+                .firstOrError()
+                .map((coin) -> coin);
+    }
+
+    @NonNull
     @NotNull
     @Override
     public Observable<List<Coin>> topCoins(@NonNull @NotNull Currency currency) {
@@ -75,7 +84,7 @@ class CmcCoinsRepo implements CoinsRepo {
         }
     }
 
-    private List<RoomCoin> mapToRoomCoins(Query query, List<? extends Coin> data) {
+    private List<RoomCoin> mapToRoomCoins (Query query, List<? extends Coin> data) {
         List<RoomCoin> roomCoins = new ArrayList<>(data.size());
         for (Coin coin : data) {
             roomCoins.add(RoomCoin.create(

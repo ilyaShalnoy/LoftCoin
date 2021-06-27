@@ -19,6 +19,9 @@ public interface CoinsRepo {
     Single<Coin> coin(Currency currency, long id);
 
     @NonNull
+    Single<Coin> nextPopularCoin(@NonNull Currency currency, List<Integer> ids);
+
+    @NonNull
     Observable<List<Coin>> topCoins(@NonNull Currency currency);
 
     @AutoValue

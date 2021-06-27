@@ -56,6 +56,7 @@ public class ConverterFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_converter, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

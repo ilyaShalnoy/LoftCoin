@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -73,16 +76,19 @@ public class WalletsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        setHasOptionsMenu(true);
         binding = FragmentWalletsBinding.bind(view); //TODO: ?
         walletsSnapHelper = new PagerSnapHelper();
         walletsSnapHelper.attachToRecyclerView(binding.recycler);
 
-        TypedValue value = new TypedValue();
+        final TypedValue value = new TypedValue();
         view.getContext().getTheme().resolveAttribute(R.attr.walletCardWidth, value, true);
-        DisplayMetrics displayMetrics = view.getContext().getResources().getDisplayMetrics();
+        final DisplayMetrics displayMetrics = view.getContext().getResources().getDisplayMetrics();
         final int padding = (int) (displayMetrics.widthPixels - value.getDimension(displayMetrics)) / 2;
         binding.recycler.setPadding(padding, 0, padding, 0);
         binding.recycler.setClipToPadding(false);
+        binding.recycler.setHasFixedSize(true);
 
         binding.recycler.addOnScrollListener(new CarouselScroller());
         binding.recycler.setLayoutManager(new LinearLayoutManager(view.getContext(), RecyclerView.HORIZONTAL, false));
@@ -100,10 +106,25 @@ public class WalletsFragment extends Fragment {
 
         binding.transactions.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.transactions.setAdapter(transactionsAdapter);
-//        binding.transactions.setHasFixedSize(true);
+        binding.transactions.setHasFixedSize(true);
 
         disposable.add(viewModel.transaction().subscribe(transactionsAdapter::submitList));
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.wallets, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (R.id.add == item.getItemId()) {
+            disposable.add(viewModel.addWallet().subscribe());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

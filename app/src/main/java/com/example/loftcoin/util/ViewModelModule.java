@@ -9,6 +9,6 @@ import dagger.Module;
  public abstract class ViewModelModule {
 
     @Binds
-    abstract ViewModelProvider.Factory viewModelFactory(ViewModelFactory imp);
+    abstract ViewModelProvider.Factory viewModelFactory (ViewModelFactory imp);
 
 }

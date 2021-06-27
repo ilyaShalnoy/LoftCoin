@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.loftcoin.data.Transaction;
 import com.example.loftcoin.data.Wallet;
 import com.example.loftcoin.databinding.LiTransactionBinding;
+import com.example.loftcoin.util.BalanceFormatter;
+import com.example.loftcoin.util.BalanceFormatter_Factory;
 import com.example.loftcoin.util.PriceFormatter;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,13 +30,15 @@ class TransactionsAdapter extends ListAdapter<Transaction, TransactionsAdapter.V
 
     private final PriceFormatter priceFormatter;
 
+    private final BalanceFormatter balanceFormatter;
+
     private int colorNegative = Color.RED;
 
     private int colorPositive = Color.GREEN;
 
 
     @Inject
-    public TransactionsAdapter(PriceFormatter priceFormatter) {
+    public TransactionsAdapter(PriceFormatter priceFormatter, BalanceFormatter balanceFormatter) {
         super(new DiffUtil.ItemCallback<Transaction>() {
             @Override
             public boolean areItemsTheSame(@NonNull @NotNull Transaction oldItem, @NonNull @NotNull Transaction newItem) {
@@ -47,6 +51,8 @@ class TransactionsAdapter extends ListAdapter<Transaction, TransactionsAdapter.V
             }
         });
         this.priceFormatter = priceFormatter;
+
+        this.balanceFormatter = balanceFormatter;
     }
 
 

@@ -22,6 +22,7 @@ import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.databinding.FragmentRatesBinding;
 import com.example.loftcoin.util.PercentFormatter;
 import com.example.loftcoin.util.PriceFormatter;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 
@@ -76,6 +78,11 @@ public class RatesFragment extends Fragment {
         binding.recyclerRates.setHasFixedSize(true);
         binding.refresher.setOnRefreshListener(viewModel::refresh);
         disposable.add(viewModel.coins().subscribe(adapter::submitList));
+        disposable.add(viewModel.onError().subscribe(e -> {
+            Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Retry", v -> viewModel.retry())
+                    .show();
+        }));
         disposable.add(viewModel.isRefreshing().subscribe(binding.refresher::setRefreshing));
     }
 

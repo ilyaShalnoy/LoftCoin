@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.data.CurrencyRepo;
 import com.example.loftcoin.data.Transaction;
 import com.example.loftcoin.data.Wallet;
@@ -69,14 +70,30 @@ public class WalletsViewModel extends ViewModel {
         return transactions.observeOn(schedulers.main());
     }
 
+
+    @NonNull
+    Completable addWallet() {
+        return wallets
+                .firstOrError()
+                .flatMap((list) -> Observable
+                        .fromIterable(list)
+                        .map(Wallet::coin)
+                        .map(Coin::id)
+                        .toList()
+                        .doOnSuccess(u -> Timber.d("%s", u))
+                )
+                .flatMapCompletable((ids) -> currencyRepo
+                        .currency()
+                        .doOnNext(u -> Timber.d("%s", u))
+                        .flatMapCompletable((c) -> walletsRepo.addWallet(c, ids))
+                )
+                .observeOn(schedulers.main());
+    }
+
+
     void changeWallet(int position) {
         walletPosition.onNext(position);
     }
 
-//
-//    @NonNull
-//    Completable addWallet() {
-//        return Completable.fromAction(() -> Timber.d("-"));
-//    }
 }
 
