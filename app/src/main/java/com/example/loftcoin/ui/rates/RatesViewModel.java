@@ -9,7 +9,6 @@ import com.example.loftcoin.data.CurrencyRepo;
 import com.example.loftcoin.data.SortBy;
 import com.example.loftcoin.util.RxSchedulers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
