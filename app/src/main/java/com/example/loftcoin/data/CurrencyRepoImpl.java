@@ -59,7 +59,7 @@ class CurrencyRepoImpl implements CurrencyRepo {
     public Observable<Currency> currency() {
         return Observable.create(emitter -> {
             SharedPreferences.OnSharedPreferenceChangeListener listener = (preferences, key) -> {
-                if (!emitter.isDisposed()) {
+                if (!emitter.isDisposed() && KEY_CURRENCY.equals(key)) {
                     emitter.onNext(Objects.requireNonNull(availableCurrencies.get(preferences.getString(key, "USD"))));
                 }
             };
