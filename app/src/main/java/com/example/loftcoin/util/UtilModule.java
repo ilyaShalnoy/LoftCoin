@@ -10,6 +10,9 @@ public abstract class UtilModule {
     abstract ImageLoader imageLoader(PicassoImageLoader impl);
 
     @Binds
-    abstract  RxSchedulers schedulers(RxSchedulersImpl impl);
+    abstract RxSchedulers schedulers(RxSchedulersImpl impl);
+
+    @Binds
+    abstract Notifier notifier(NotifierImpl impl);
 
 }

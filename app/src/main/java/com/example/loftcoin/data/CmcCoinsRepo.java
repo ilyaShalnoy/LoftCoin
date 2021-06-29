@@ -4,16 +4,18 @@ import androidx.annotation.NonNull;
 
 import com.example.loftcoin.util.RxSchedulers;
 
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Single;
 
 @Singleton
 class CmcCoinsRepo implements CoinsRepo {
@@ -32,8 +34,9 @@ class CmcCoinsRepo implements CoinsRepo {
         this.schedulers = schedulers;
     }
 
+    @NonNull
     @Override
-    public Observable<List<Coin>> listings(@NonNull @NotNull CoinsRepo.Query query) {
+    public Observable<List<Coin>> listings(@NonNull Query query) {
         return Observable
                 .fromCallable(() -> query.forceUpdate() || db.coins().coinsCount() == 0)
                 .switchMap((f) -> f ? api.listings(query.currency()) : Observable.empty())
@@ -41,8 +44,36 @@ class CmcCoinsRepo implements CoinsRepo {
                 .doOnNext((coins) -> db.coins().insert(coins))
                 .switchMap((coins) -> fetchFromDb(query))
                 .switchIfEmpty(fetchFromDb(query))
-                .<List<Coin>>map(ArrayList::new)
+                .<List<Coin>>map(Collections::unmodifiableList)
                 .subscribeOn(schedulers.io());
+    }
+
+    @NonNull
+    @Override
+    public Single<Coin> coin (@NonNull Currency currency, long id) {
+        return listings(Query.builder().currency(currency.code()).forceUpdate(false).build())
+                .switchMapSingle((coins) -> db.coins().fetchOne(id))
+                .firstOrError()
+                .map((coin) -> coin);
+    }
+
+    @NonNull
+    @Override
+    public Single<Coin> nextPopularCoin(@NonNull Currency currency, List<Integer> ids) {
+        return listings(Query.builder().currency(currency.code()).forceUpdate(false).build())
+                .switchMapSingle((coins) -> db.coins().nextPopularCoin(ids))
+                .firstOrError()
+                .map((coin) -> coin);
+    }
+
+    @NonNull
+    @NotNull
+    @Override
+    public Observable<List<Coin>> topCoins(@NonNull @NotNull Currency currency) {
+        return listings(Query.builder().currency(currency.code()).forceUpdate(false).build())
+                .switchMap((coins) -> db.coins().fetchTop(3))
+                .<List<Coin>>map(Collections::unmodifiableList);
+
     }
 
     private Observable<List<RoomCoin>> fetchFromDb(Query query) {
@@ -53,7 +84,7 @@ class CmcCoinsRepo implements CoinsRepo {
         }
     }
 
-    private List<RoomCoin> mapToRoomCoins(Query query, List<? extends Coin> data) {
+    private List<RoomCoin> mapToRoomCoins (Query query, List<? extends Coin> data) {
         List<RoomCoin> roomCoins = new ArrayList<>(data.size());
         for (Coin coin : data) {
             roomCoins.add(RoomCoin.create(

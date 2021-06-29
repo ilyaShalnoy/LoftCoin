@@ -2,6 +2,7 @@ package com.example.loftcoin;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.TrafficStats;
 
 import com.example.loftcoin.data.CmcApi;
 import com.squareup.picasso.OkHttp3Downloader;
@@ -9,6 +10,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Singleton;
 
@@ -30,8 +32,17 @@ public abstract class AppModule {
     @Singleton
     static ExecutorService ioExecutor() {
         int poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1;
-        return Executors.newFixedThreadPool(poolSize);
+        final AtomicInteger threadIds = new AtomicInteger();
+        return Executors.newFixedThreadPool(poolSize, r -> {
+            final Thread thread = new Thread(r);
+            final int threadId = threadIds.incrementAndGet();
+            TrafficStats.setThreadStatsTag(threadId);
+            thread.setName("io-" + threadId);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            return thread;
+        });
     }
+
 
     @Singleton
     @Provides
