@@ -1,80 +1,78 @@
 package com.example.loftcoin.ui.rates;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.data.CoinsRepo;
 import com.example.loftcoin.data.CurrencyRepo;
 import com.example.loftcoin.data.SortBy;
+import com.example.loftcoin.util.RxSchedulers;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import io.reactivex.Observable;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.Subject;
 
 public class RatesViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> isRefreshing = new MutableLiveData<>();
+    private final Subject<Boolean> isRefreshing = BehaviorSubject.create();
 
-    private final MutableLiveData<AtomicBoolean> forceRefresh = new MutableLiveData<>(new AtomicBoolean(true));
+    private final Subject<Class<?>> pullToRefresh = BehaviorSubject.createDefault(Void.TYPE);
 
-    private final MutableLiveData<SortBy> sortBy = new MutableLiveData<>(SortBy.RANK);
+    private final Subject<SortBy> sortBy = BehaviorSubject.createDefault(SortBy.RANK);
 
-    private final LiveData<List<Coin>> coins;
+    private final AtomicBoolean forceUpdate = new AtomicBoolean();
+
+    private final Observable<List<Coin>> coins;
+
+    private final RxSchedulers rxSchedulers;
 
     private int sortingIndex = 1;
 
     @Inject
-    public RatesViewModel(CoinsRepo coinsRepo, CurrencyRepo currencyRepo) {
-        final LiveData<CoinsRepo.Query> query = Transformations.switchMap(forceRefresh, (r) -> {
-            return Transformations.switchMap(currencyRepo.currency(), (c) -> {
-                r.set(true);
-                isRefreshing.postValue(true);
-                return Transformations.map(sortBy, (s) -> {
-                    return CoinsRepo.Query.builder()
-                            .currency(c.code())
-                            .forceUpdate(r.getAndSet(false))
-                            .sortBy(s)
-                            .build();
-                });
-            });
-        });
+    public RatesViewModel(CoinsRepo coinsRepo, CurrencyRepo currencyRepo, RxSchedulers rxSchedulers) {
 
-        final LiveData<List<Coin>> coins = Transformations.switchMap(query, coinsRepo::listings);
-        this.coins = Transformations.map(coins, (c) -> {
-            isRefreshing.postValue(false);
-            return c;
-        });
-    }
+        this.rxSchedulers = rxSchedulers;
 
+        this.coins = pullToRefresh
+                .map((ptr) -> CoinsRepo.Query.builder())
+                .switchMap((qb) -> currencyRepo.currency()
+                        .map((c) -> qb.currency(c.code()))
+                )
+                .doOnNext((qb) -> forceUpdate.set(true))
+                .doOnNext((qb) -> isRefreshing.onNext(true))
+                .switchMap((qb) -> sortBy
+                        .map((s) -> qb.sortBy(s))
+                )
+                .map((qb) -> qb.forceUpdate(forceUpdate.getAndSet(false)))
+                .map((qb) -> qb.build())
+                .switchMap((q) -> coinsRepo.listings(q))
+                .doOnEach((ntf) -> isRefreshing.onNext(false));
 
-    @NonNull
-    LiveData<List<Coin>> coins() {
-        return coins;
     }
 
     @NonNull
-    LiveData<Boolean> isRefreshing() {
-        return isRefreshing;
+    Observable<List<Coin>> coins() {
+        return coins.observeOn(rxSchedulers.main());
+    }
+
+    @NonNull
+    Observable<Boolean> isRefreshing() {
+        return isRefreshing.observeOn(rxSchedulers.main());
     }
 
     final void refresh() {
-        forceRefresh.postValue(new AtomicBoolean(true));
+        pullToRefresh.onNext(Void.TYPE);
     }
 
     void switchSortingOrder() {
-        sortBy.postValue(SortBy.values()[sortingIndex++ % SortBy.values().length]);
+        sortBy.onNext(SortBy.values()[sortingIndex++ % SortBy.values().length]);
     }
 
 }

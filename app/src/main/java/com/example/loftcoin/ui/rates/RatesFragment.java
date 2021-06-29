@@ -18,18 +18,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.loftcoin.BaseComponent;
 import com.example.loftcoin.R;
+import com.example.loftcoin.data.Coin;
 import com.example.loftcoin.databinding.FragmentRatesBinding;
 import com.example.loftcoin.util.PercentFormatter;
 import com.example.loftcoin.util.PriceFormatter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 
 public class RatesFragment extends Fragment {
+
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     private final RatesComponent component;
 
@@ -69,13 +75,8 @@ public class RatesFragment extends Fragment {
         binding.recyclerRates.swapAdapter(adapter, false);
         binding.recyclerRates.setHasFixedSize(true);
         binding.refresher.setOnRefreshListener(viewModel::refresh);
-        viewModel.coins().observe(getViewLifecycleOwner(), (coins) -> {
-            adapter.submitList(coins);
-        });
-        viewModel.isRefreshing().observe(getViewLifecycleOwner(), (refreshing) -> {
-            binding.refresher.setRefreshing(refreshing);
-        });
-
+        disposable.add(viewModel.coins().subscribe(adapter::submitList));
+        disposable.add(viewModel.isRefreshing().subscribe(binding.refresher::setRefreshing));
     }
 
     @Override
@@ -101,6 +102,15 @@ public class RatesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         binding.recyclerRates.swapAdapter(null, false);
+        disposable.clear();
         super.onDestroyView();
     }
+
+//    private void submitlist(List<Coin> coins) {
+//        adapter.submitList(coins);
+//    }
+//
+//    private void accept(Boolean coins) {
+//        binding.refresher.setRefreshing(refreshing);
+//    }
 }
