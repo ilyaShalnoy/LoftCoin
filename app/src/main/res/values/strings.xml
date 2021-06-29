@@ -19,11 +19,12 @@
     <!-- Currency Dialog -->
     <string name="choose_currency">Выбор валюты</string>
     <string name="sort">Сортировать</string>
-    <string name="rub">Рубль</string>
+
 
    <!-- Rates Fragment -->
     <string name="eur">Евро</string>
     <string name="usd">Доллар</string>
+    <string name="rub">Рубль</string>
 
     <!-- Notify -->
     <string name="default_channel_id" translatable="false">default_channel</string>
