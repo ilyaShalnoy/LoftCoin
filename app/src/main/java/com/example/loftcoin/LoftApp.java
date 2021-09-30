@@ -3,13 +3,7 @@ package com.example.loftcoin;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.example.loftcoin.ui.main.MainActivity;
 import com.example.loftcoin.util.DebugTree;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.installations.FirebaseInstallations;
-import com.google.firebase.installations.InstallationTokenResult;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import timber.log.Timber;
 
